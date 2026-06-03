@@ -1,0 +1,8 @@
+node_modules/
+.env
+sessions/
+__MACOSX/
+*.DS_Store
+.DS_Store
+client/public/media/*
+!client/public/media/.gitkeep
