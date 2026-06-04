@@ -84,6 +84,17 @@ app.use("/meta-media", createMediaMiddleware("./client/public/meta-media"));
 // ─── Static & Catch-All ───────────────────────────────────────────────────────
 app.use(express.static(path.resolve(currentDir, "./client/public")));
 
+// ─── SEO Files ────────────────────────────────────────────────────────────────
+app.get("/sitemap.xml", (req, res) => {
+  res.setHeader("Content-Type", "application/xml");
+  res.sendFile(path.resolve(currentDir, "./client/public", "sitemap.xml"));
+});
+
+app.get("/robots.txt", (req, res) => {
+  res.setHeader("Content-Type", "text/plain");
+  res.sendFile(path.resolve(currentDir, "./client/public", "robots.txt"));
+});
+
 app.get("*", function (request, response) {
   response.sendFile(path.resolve(currentDir, "./client/public", "index.html"));
 });

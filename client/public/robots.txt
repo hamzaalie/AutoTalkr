@@ -1,3 +1,8 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /user/
+Disallow: /agent/
+Disallow: /api/
+
+Sitemap: https://autotalkr.com/sitemap.xml
