@@ -656,6 +656,32 @@ CREATE TABLE IF NOT EXISTS `rooms` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `webhook` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `webhook_id` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `url` text NOT NULL,
+  `secret` varchar(255) DEFAULT NULL,
+  `events` text DEFAULT NULL,
+  `active` tinyint(1) DEFAULT 1,
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `webhook_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uid` varchar(255) NOT NULL,
+  `webhook_id` int DEFAULT NULL,
+  `event` varchar(100) DEFAULT NULL,
+  `payload` text DEFAULT NULL,
+  `status` varchar(50) DEFAULT NULL,
+  `http_status` int DEFAULT NULL,
+  `response_body` text DEFAULT NULL,
+  `createdAt` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Seed initial data
 INSERT IGNORE INTO `web_public` (`id`, `app_name`, `currency`, `currency_symbol`, `rtl`) VALUES (1, 'WhatsCRM', 'USD', '$', 0);
 INSERT IGNORE INTO `web_private` (`id`, `qr_storage`) VALUES (1, 'local');

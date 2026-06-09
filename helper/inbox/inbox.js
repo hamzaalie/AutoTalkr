@@ -1,4 +1,5 @@
 const { query } = require("../../database/dbpromise");
+const { dispatchWebhook } = require("../addon/webhook/index");
 const {
   getConnectionsByUid,
   sendToUid,
@@ -326,6 +327,15 @@ async function processMessage({
         sendToSocket(socket?.socketId, {}, "ring");
       }
     });
+
+    // dispatch webhook events on new message
+    if (latestConversation?.newMessage && uid) {
+      dispatchWebhook({
+        uid,
+        event: "message.received",
+        data: latestConversation.newMessage,
+      }).catch(() => {});
+    }
 
     // chatbot init
     if (latestConversation?.newMessage && uid) {

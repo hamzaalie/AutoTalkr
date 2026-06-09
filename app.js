@@ -89,6 +89,42 @@ app.get("*", function (request, response) {
 });
 
 // ─── Server ───────────────────────────────────────────────────────────────────
+// ─── Run startup migrations ───────────────────────────────────────────────────
+const { query: dbQuery } = require("./database/dbpromise");
+(async () => {
+  try {
+    await dbQuery(`CREATE TABLE IF NOT EXISTS \`webhook\` (
+      \`id\` int NOT NULL AUTO_INCREMENT,
+      \`uid\` varchar(255) NOT NULL,
+      \`webhook_id\` varchar(255) NOT NULL,
+      \`name\` varchar(255) NOT NULL,
+      \`url\` text NOT NULL,
+      \`secret\` varchar(255) DEFAULT NULL,
+      \`events\` text DEFAULT NULL,
+      \`active\` tinyint(1) DEFAULT 1,
+      \`createdAt\` datetime DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (\`id\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
+
+    await dbQuery(`CREATE TABLE IF NOT EXISTS \`webhook_log\` (
+      \`id\` int NOT NULL AUTO_INCREMENT,
+      \`uid\` varchar(255) NOT NULL,
+      \`webhook_id\` int DEFAULT NULL,
+      \`event\` varchar(100) DEFAULT NULL,
+      \`payload\` text DEFAULT NULL,
+      \`status\` varchar(50) DEFAULT NULL,
+      \`http_status\` int DEFAULT NULL,
+      \`response_body\` text DEFAULT NULL,
+      \`createdAt\` datetime DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (\`id\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
+
+    console.log("Webhook tables ready");
+  } catch (e) {
+    console.error("Migration error:", e?.message);
+  }
+})();
+
 const server = app.listen(process.env.PORT || 3010, () => {
   console.log(`WaCrm server is running on port ${process.env.PORT}`);
   updateLangJsonFromEnglish();
