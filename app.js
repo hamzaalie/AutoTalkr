@@ -120,6 +120,10 @@ const { query: dbQuery } = require("./database/dbpromise");
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
 
     console.log("Webhook tables ready");
+
+    // Add QR and number columns to instance table if missing
+    await dbQuery(`ALTER TABLE instance ADD COLUMN IF NOT EXISTS qr LONGTEXT DEFAULT NULL`).catch(() => {});
+    await dbQuery(`ALTER TABLE instance ADD COLUMN IF NOT EXISTS number varchar(50) DEFAULT NULL`).catch(() => {});
   } catch (e) {
     console.error("Migration error:", e?.message);
   }

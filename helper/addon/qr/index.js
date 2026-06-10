@@ -64,11 +64,12 @@ async function createSession(uniqueId, label) {
       if (qr) {
         try {
           const qrImage = await toDataURL(qr);
+          // Save QR to DB so frontend can display it on page load/refresh
+          await query(`UPDATE instance SET status = 'GENERATING', qr = ? WHERE uniqueId = ?`, [qrImage, uniqueId]);
           const rows = await query(`SELECT uid FROM instance WHERE uniqueId = ?`, [uniqueId]);
           if (rows && rows.length > 0) {
             sendToUid(rows[0].uid, { qr: qrImage, uniqueId }, "qr_code");
           }
-          await query(`UPDATE instance SET status = 'GENERATING' WHERE uniqueId = ?`, [uniqueId]);
         } catch (e) {
           console.error("QR generation error:", e?.message);
         }
