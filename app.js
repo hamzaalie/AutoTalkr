@@ -128,12 +128,10 @@ const { query: dbQuery } = require("./database/dbpromise");
 const server = app.listen(process.env.PORT || 3010, () => {
   console.log(`WaCrm server is running on port ${process.env.PORT}`);
   updateLangJsonFromEnglish();
-  // init();
-  // setTimeout(() => {
-  //   warmerLoopInit();
-  //   initCampaign();
-  //   initTele();
-  // }, 1000);
+  init();
+  setTimeout(() => {
+    initCampaign();
+  }, 1000);
 });
 
 // ─── Socket.IO ────────────────────────────────────────────────────────────────
