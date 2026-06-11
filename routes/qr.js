@@ -125,14 +125,20 @@ router.post(
         [req.decode.uid, title, uniqueId, "GENERATING"],
       );
 
-      await createSession(
-        uniqueId,
-        title?.length > 20 ? title.slice(0, 20) : title,
-      );
+      // Wait for Baileys to produce the first QR (max 20s), then respond
+      const qrImage = await new Promise((resolve) => {
+        const timer = setTimeout(() => resolve(null), 20000);
+        createSession(
+          uniqueId,
+          title?.length > 20 ? title.slice(0, 20) : title,
+          (img) => { clearTimeout(timer); resolve(img); }
+        );
+      });
 
       res.json({
         success: true,
         msg: "Qr code is generating",
+        qr: qrImage,
       });
     } catch (err) {
       console.error(err);

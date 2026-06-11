@@ -36,7 +36,7 @@ async function deleteSession(id) {
   }
 }
 
-async function createSession(uniqueId, label) {
+async function createSession(uniqueId, label, onFirstQr = null) {
   try {
     const { default: makeWASocket, DisconnectReason, useMultiFileAuthState, fetchLatestBaileysVersion } = require("baileys");
     const { sendToUid } = require("../../../socket");
@@ -70,6 +70,8 @@ async function createSession(uniqueId, label) {
           if (rows && rows.length > 0) {
             sendToUid(rows[0].uid, { qr: qrImage, uniqueId }, "qr_code");
           }
+          // Notify gen_qr route that QR is ready
+          if (onFirstQr) { onFirstQr(qrImage); onFirstQr = null; }
         } catch (e) {
           console.error("QR generation error:", e?.message);
         }
